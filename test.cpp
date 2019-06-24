@@ -5,7 +5,7 @@ int main()
 
 	int x;
 	cin >> x; 
-	cout << z + 5 << endl; 
+	cout << x+3 << endl; 
 	return 0;
 
 	// my first successful git repository
