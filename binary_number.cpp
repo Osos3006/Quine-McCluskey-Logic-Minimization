@@ -1,28 +1,23 @@
 #include "binary_number.h"
 #include<string>
 
-
 binary_number::binary_number()
 {
     num = 0;
     dashes=0;
     is_used=false;
-<<<<<<< HEAD
 	covered_mins.resize(0);
 }
 
-binary_number::binary_number(int dec)
-{
-	num = decimal_to_binary(dec);
-	dashes = 0;
-	is_used = false;
-	covered_mins.resize(0);
-=======
-    
->>>>>>> 1f6de8cdb82f956857445cd04b3558458c939b4d
-}
+//binary_number::binary_number(int dec)
+//{
+//	num = decimal_to_binary(dec);
+//	dashes = 0;
+//	is_used = false;
+//	covered_mins.resize(0);
+//}
 
-unsigned binary_number:: count_ones(unsigned num)
+int binary_number::count_ones(unsigned num)
 {
 	short bit = 0;
 	int count = 0;
@@ -40,6 +35,7 @@ void binary_number::print_number(unsigned num, int Bits_num)
 {
 	vector<unsigned> bits;
 	bits.resize(Bits_num);
+	bits = { 0 };
 	int count = 0; 
 	while (num > 0 || count < Bits_num)
 	{
