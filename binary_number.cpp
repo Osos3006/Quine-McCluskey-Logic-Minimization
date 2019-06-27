@@ -4,6 +4,8 @@
 
 binary_number::binary_number()
 {
+    num = 0;
+    
 }
 
 
