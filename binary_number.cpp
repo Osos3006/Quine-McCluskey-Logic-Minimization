@@ -17,7 +17,7 @@ binary_number::binary_number()
 //	covered_mins.resize(0);
 //}
 
-int binary_number::count_ones(unsigned num)
+int binary_number::count_ones()
 {
 	short bit = 0;
 	int count = 0;
@@ -31,7 +31,7 @@ int binary_number::count_ones(unsigned num)
 	}
 	return count;
 }
-void binary_number::print_number(unsigned num, int Bits_num)
+void binary_number::print_number(int Bits_num)
 {
 	vector<unsigned> bits = { 0 };
 	bits.resize(Bits_num);
