@@ -7,6 +7,7 @@ binary_number::binary_number()
     num = 0;
     dashes=0;
     is_used=false;
+<<<<<<< HEAD
 	covered_mins.resize(0);
 }
 
@@ -16,6 +17,9 @@ binary_number::binary_number(int dec)
 	dashes = 0;
 	is_used = false;
 	covered_mins.resize(0);
+=======
+    
+>>>>>>> 1f6de8cdb82f956857445cd04b3558458c939b4d
 }
 
 unsigned binary_number:: count_ones(unsigned num)
