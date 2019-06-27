@@ -17,7 +17,7 @@ public:
 
 	unsigned count_ones(unsigned num);
 	void print_number(unsigned num);
-	int decimal();
+	int binary_to_decimal();
 	void push_decimal();
 	
 };

@@ -5,6 +5,8 @@
 binary_number::binary_number()
 {
     num = 0;
+    dashes=0;
+    is_used=false;
     
 }
 

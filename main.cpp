@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-#include<iostream>
-using namespace std;
-int main ()
-{
-    cout << "helloworld";
-    //system("pause");
-    return 0;
-=======
 #include <iostream>
 #include "binary_number.h"
 
@@ -28,5 +19,4 @@ void print_finalMinterms();
 int main()
 {
 
->>>>>>> 0d912630a89e33a8ffe6509de00c31bd37874d0f
 }
