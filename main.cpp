@@ -67,9 +67,14 @@ int main()
 	}
 
 	int total_num = num_of_mins + num_of_dc;
-	create_MinTable(Initial_table,minterms,total_num);
+
+	for (int i = 0; i < num_of_mins ; i++)
+		inputs.push_back(minterms[i]);
+	for (int i = 0; i < num_of_dc; i++)
+		inputs.push_back(dontcares[i]);
 
 
+		create_MinTable(Initial_table,inputs,total_num);
 
 
 	system("pause");
@@ -77,27 +82,28 @@ int main()
 	return 0;
 }
 
-void create_MinTable(vector<vector<binary_number>> A,  vector<int> minterms, int size)
+void create_MinTable(vector<vector<binary_number>> A,  vector<int> inputs, int size)
 {
 
 	binary_number temp;
 	int number_of_ones;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < ize; i++)
 	{
-		number_of_ones = count_ones(minterms[i]); //****
+		binary_number temp(inputs[i]);
+		number_of_ones = temp.count_ones(); //****
 		if (number_of_ones + 1 > A.size())
 			A.resize(number_of_ones + 1);
-		binary_number temp(minterms[i]);
 		A[number_of_ones].push_back(temp);
 	}
 
-}
-
-void create_combined()
-{
-
-}
-
 
 	
+}
+
+/*void create_combined()
+{
+
+}*/
+
+
