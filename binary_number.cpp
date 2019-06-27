@@ -33,9 +33,8 @@ int binary_number::count_ones(unsigned num)
 }
 void binary_number::print_number(unsigned num, int Bits_num)
 {
-	vector<unsigned> bits;
+	vector<unsigned> bits = { 0 };
 	bits.resize(Bits_num);
-	bits = { 0 };
 	int count = 0; 
 	while (num > 0 || count < Bits_num)
 	{

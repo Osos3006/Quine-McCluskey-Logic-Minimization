@@ -19,4 +19,6 @@ void print_finalMinterms();
 int main()
 {
 
+	system("pause");
+	return 0;
 }
