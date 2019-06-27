@@ -4,7 +4,8 @@ int main()
 {
 
 	int x;
-	cin >> x; 
+	cin >> x;
+	cout << "i am funky";
 	cout << x+3 << endl; 
 	return 0;
 
