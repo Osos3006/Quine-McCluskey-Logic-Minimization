@@ -3,9 +3,9 @@
 
 binary_number::binary_number()
 {
-    num = 0;
-    dashes=0;
-    is_used=false;
+	num = 0;
+	dashes = 0;
+	is_used = false;
 	covered_mins.resize(0);
 }
 
@@ -21,7 +21,7 @@ int binary_number::count_ones(int n)
 {
 	short bit = 0;
 	int count = 0;
-	while (n > 0) 
+	while (n > 0)
 	{
 		bit = n % 2;
 		n >>= 1;
@@ -36,7 +36,7 @@ void binary_number::print_number(int Bits_num)
 	int n = num;
 	vector<unsigned> bits = { 0 };
 	bits.resize(Bits_num);
-	int count = 0; 
+	int count = 0;
 	while (n > 0 || count < Bits_num)
 	{
 		bits[count] = n % 2;
@@ -53,24 +53,24 @@ int binary_number::binary_to_decimal(unsigned bin)
 	int dec = stoi(bin_st, nullptr, 2);
 	return dec;
 }
-void binary_number:: push_decimal(int dec)
+void binary_number::push_decimal(int dec)
 {
 	covered_mins.push_back(dec);
 }
 
 /*unsigned binary_number::decimal_to_binary (int dec)
 {
-	string bin="";
-	while (dec > 0)
-	{
-		//bin = bin + char(dec % 2)
-		string p = to_string(dec % 2);
-		//bin.append(p);
-		bin = bin + p;
-		dec >>= 1;
-	}
-	unsigned res = atoi(bin.c_str());
-	return res;
+string bin="";
+while (dec > 0)
+{
+//bin = bin + char(dec % 2)
+string p = to_string(dec % 2);
+//bin.append(p);
+bin = bin + p;
+dec >>= 1;
+}
+unsigned res = atoi(bin.c_str());
+return res;
 }*/
 void binary_number::print_with_dashes(int Bits_num)
 {
