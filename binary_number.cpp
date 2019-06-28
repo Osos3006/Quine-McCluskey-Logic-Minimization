@@ -11,7 +11,7 @@ binary_number::binary_number()
 
 binary_number::binary_number(int dec)
 {
-	num = decimal_to_binary(dec);
+	num = dec;
 	dashes = 0;
 	is_used = false;
 	covered_mins.resize(0);
@@ -58,7 +58,7 @@ void binary_number:: push_decimal(int dec)
 	covered_mins.push_back(dec);
 }
 
-unsigned binary_number::decimal_to_binary (int dec)
+/*unsigned binary_number::decimal_to_binary (int dec)
 {
 	string bin="";
 	while (dec > 0)
@@ -71,7 +71,7 @@ unsigned binary_number::decimal_to_binary (int dec)
 	}
 	unsigned res = atoi(bin.c_str());
 	return res;
-}
+}*/
 void binary_number::print_with_dashes(int Bits_num)
 {
 	int n = num;

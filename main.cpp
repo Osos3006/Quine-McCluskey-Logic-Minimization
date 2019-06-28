@@ -7,7 +7,7 @@
 using namespace std;
 
 void create_MinTable(vector<vector<binary_number>>& A,vector<unsigned>&, int size);
-//void print_MinTable();
+void print_MinTable(vector<vector<binary_number>>& A, int Binsize);
 void create_combined();
 void print_combined();//***
 void print_withDashes();
@@ -19,7 +19,7 @@ void print_finalMinterms();
 //void getinput(); //get input from user
 //unsigned count_bits(unsigned n); //min bits to represent a number
 vector<vector<binary_number>> Initial_table;   //vector of vectors - each vector inside represents a group according to the number of ones
-vector<vector<binary_number>>& mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
+vector<vector<binary_number>> mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
 int num_of_var; //number of variables
 int main()
 {
@@ -76,10 +76,8 @@ int main()
 
 
 	create_MinTable(Initial_table, inputs, total_num);
+	print_MinTable(Initial_table, num_of_var);
 
-	for (int i = 0; i < Initial_table.size(); i++)
-		for (int j = 0; j < Initial_table[i].size(); j++)
-			cout << Initial_table[i][j].num << endl;
 	system("pause");
 
 	return 0;
@@ -95,7 +93,7 @@ void create_MinTable(vector<vector<binary_number>>& A,  vector<unsigned>& inputs
 	{
 		number_of_ones = 0;
 		binary_number temp(inputs[i]);
-		number_of_ones = temp.count_ones(); //****
+		number_of_ones = temp.count_ones(inputs[i]); //****
 		if (number_of_ones + 1 > A.size())
 			A.resize(number_of_ones + 1);
 		A[number_of_ones].push_back(temp);
@@ -103,6 +101,18 @@ void create_MinTable(vector<vector<binary_number>>& A,  vector<unsigned>& inputs
 
 
 	
+}
+
+
+void print_MinTable(vector<vector<binary_number>>& A, int s)
+{
+
+	for (int i = 0; i < A.size(); i++)
+		for (int j = 0; j < A[i].size(); j++)
+		{
+			A[i][j].print_number(s);
+			cout << endl;
+		}
 }
 
 void create_combined()
