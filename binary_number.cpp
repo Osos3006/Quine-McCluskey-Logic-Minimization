@@ -9,13 +9,13 @@ binary_number::binary_number()
 	covered_mins.resize(0);
 }
 
-//binary_number::binary_number(int dec)
-//{
-//	num = decimal_to_binary(dec);
-//	dashes = 0;
-//	is_used = false;
-//	covered_mins.resize(0);
-//}
+binary_number::binary_number(int dec)
+{
+	num = decimal_to_binary(dec);
+	dashes = 0;
+	is_used = false;
+	covered_mins.resize(0);
+}
 
 int binary_number::count_ones()
 {
@@ -59,13 +59,16 @@ void binary_number:: push_decimal(int dec)
 
 unsigned binary_number::decimal_to_binary (int dec)
 {
-	string bin;
+	string bin="";
 	while (dec > 0)
 	{
-		bin = bin + char(dec % 2);
+		//bin = bin + char(dec % 2)
+		string p = to_string(dec % 2);
+		//bin.append(p);
+		bin = bin + p;
 		dec >>= 1;
 	}
-	unsigned res = stoi(bin);
+	unsigned res = atoi(bin.c_str());
 	return res;
 }
 
