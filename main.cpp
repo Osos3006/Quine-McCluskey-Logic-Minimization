@@ -7,25 +7,25 @@
 using namespace std;
 
 void create_MinTable(vector<vector<binary_number>>& A,vector<unsigned>&, int size);
-/*void print_MinTable();
+//void print_MinTable();
 void create_combined();
 void print_combined();//***
 void print_withDashes();
 void create_finalTable();
 void print_finalTable();
 void print_finalMinterms();
-//bool is_printed();*/
+//bool is_printed();
 //void init(); //start the table making and printing
 //void getinput(); //get input from user
 //unsigned count_bits(unsigned n); //min bits to represent a number
-
+vector<vector<binary_number>> Initial_table;   //vector of vectors - each vector inside represents a group according to the number of ones
+vector<vector<binary_number>>& mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
+int num_of_var; //number of variables
 int main()
 {
-	vector<vector<binary_number>> Initial_table;   //vector of vectors - each vector inside represents a group according to the number of ones
 
-
-
-	int num_of_var; //number of variables
+	
+	
 	int mint;  //minterm 
 	int dont_c;  //don't care
 	vector<unsigned> minterms, dontcares, inputs;   //vector of minterms and dont cares
@@ -65,6 +65,7 @@ int main()
 			minterms_file.get(c);
 		}
 	}
+	minterms_file.close();
 
 	int total_num = num_of_mins + num_of_dc;
 
@@ -104,9 +105,48 @@ void create_MinTable(vector<vector<binary_number>>& A,  vector<unsigned>& inputs
 	
 }
 
-/*void create_combined()
+void create_combined()
 {
+	short temp;
+	binary_number temp_num;
+	for (int i = 0; i < Initial_table.size() - 1; i++)
+		for (int j = 0; j < Initial_table[i].size(); j++)
+			for (int k = 0; k < Initial_table[i + 1].size(); k++)
+			{
+				temp_num.num = Initial_table[i][j].num & Initial_table[i + 1][k].num;
+				temp_num.dashes = Initial_table[i][j].num ^ Initial_table[i + 1][k].num;
+				if (temp_num.count_ones(temp_num.dashes) == 1)
+				{
+					Initial_table[i][j].is_used = true;
+					Initial_table[i + 1][k].is_used = true;
 
-}*/
+
+					temp = temp_num.count_ones(temp_num.num);
+					if (temp + 1 > mid_table.size)
+						mid_table.resize(temp + 1);
+
+					temp_num.is_used = false;
+					mid_table[temp].push_back(temp_num);
+				}
+			}
+}
+
+
+
+void print_combined()
+{
+	cout << endl << "MID PROCESS COMPUTATION:" << endl;
+	for (int i = 0; i < mid_table.size(); i++) 
+	{
+		cout << i;
+		for (int j = 0; j < mid_table[i].size(); j++) {
+			cout << "\t\t";
+			//print_p_binary(p_group[i][j].number, p_group[i][j].dashes);
+			mid_table[i][j].print_with_dashes(num_of_var);
+			cout << endl;
+		}
+		cout << "\n-------------------------------------" << endl;
+	}
+}
 
 
