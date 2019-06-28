@@ -15,6 +15,9 @@ void create_final_table(vector<vector<binary_number>>& mid_table, vector<vector<
 void print_final_table(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table, vector<vector<binary_number>>& final_table, vector<binary_number>& printed_numbers);
 void print_finalMinterms(vector<vector<binary_number>>& mid_table);
 bool is_printed(binary_number n, vector<binary_number>& printed_numbers);
+bool is_minterm(unsigned n, vector<unsigned>& s);
+bool is_dontcare(unsigned n, vector<unsigned>& s);
+
 //void init(); //start the table making and printing
 //void getinput(); //get input from user
 //unsigned count_bits(unsigned n); //min bits to represent a number
@@ -161,15 +164,23 @@ int main()
 
 
 
-
+	cout << "The Prime Implicants :";
 	for (int i = 0; i < final_table.size(); i++)
 	{
-		cout << i;
+		//cout << i;
 		for (int j = 0; j < final_table[i].size(); j++) {
 			if (!is_printed(final_table[i][j], printed_numbers))
 			{
-				cout << "\t\t";
+				//cout << "\t\t";
 				final_table[i][j].print_with_dashes(num_of_var);
+				cout << "        " << "and it covers minterms : ";
+				for (int f = 0; f < final_table[i][j].covered_mins.size(); f++)
+					if (is_minterm(final_table[i][j].num, minterms))
+						cout << final_table[i][j].num << ", ";
+				cout << "and it covers don't cares : ";
+				for (int f = 0; f < final_table[i][j].covered_mins.size(); f++)
+					if (is_dontcare(final_table[i][j].num, dontcares))
+						cout << final_table[i][j].num << ", ";
 				cout << endl;
 				printed_numbers.push_back(final_table[i][j]);
 			}
@@ -198,9 +209,29 @@ int main()
 	return 0;
 }
 
+
+bool is_minterm(unsigned n, vector<unsigned>& s)
+{
+	bool exists = false;
+	for (int i = 0; i < s.size(); i++)
+		if (s[i] == n)
+			exists = true;
+	return exists;
+}
+
+bool is_dontcare(unsigned n, vector<unsigned>& s)
+{
+	bool exists = false;
+	for (int i = 0; i < s.size(); i++)
+		if (s[i] == n)
+			exists = true;
+	return exists;
+}
+
+
 void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>& inputs, int size)
 {
-
+	int covered_size = 0;
 	binary_number temp;
 	int number_of_ones;
 
@@ -213,6 +244,10 @@ void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>& inputs,
 			A.resize(number_of_ones + 1);
 		A[number_of_ones].push_back(temp);
 
+
+
+		int esize = A[number_of_ones].size() - 1;
+		A[number_of_ones][esize].covered_mins.push_back(inputs[i]);
 	}
 
 
@@ -253,9 +288,6 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 						Initial_table[i][j].is_used = true;
 						Initial_table[i + 1][k].is_used = true;
 
-						/*temp_num.covered_mins.push_back(Initial_table[i][j].num);
-						temp_num.covered_mins.push_back(Initial_table[i+1][k].num);*/
-
 
 						temp = temp_num.count_ones(temp_num.num);
 						if (temp + 1 > mid_table.size())
@@ -263,6 +295,14 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 
 						temp_num.is_used = false;
 						mid_table[temp].push_back(temp_num);
+						int esize = mid_table[temp].size() - 1;
+
+						for (int e = 0; e < Initial_table[i][j].covered_mins.size(); e++)
+							mid_table[temp][esize].covered_mins.push_back(Initial_table[i][j].covered_mins[e]);
+						for (int e = 0; e < Initial_table[i + 1][k].covered_mins.size(); e++)
+							mid_table[temp][esize].covered_mins.push_back(Initial_table[i + 1][k].covered_mins[e]);
+
+
 					}
 				}
 			}
