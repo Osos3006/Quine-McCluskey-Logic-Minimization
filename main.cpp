@@ -88,9 +88,9 @@ void create_MinTable(vector<vector<binary_number>> A,  vector<int> inputs, int s
 	binary_number temp;
 	int number_of_ones;
 
-	for (int i = 0; i < ize; i++)
+	for (int i = 0; i < size; i++)
 	{
-		binary_number temp(inputs[i]);
+		binary_number temp (inputs[i]);
 		number_of_ones = temp.count_ones(); //****
 		if (number_of_ones + 1 > A.size())
 			A.resize(number_of_ones + 1);

@@ -17,8 +17,8 @@ public:
 	binary_number();
 	~binary_number();
 
-	int count_ones(unsigned num);  // counts the number of ones in the binary number
-	void print_number(unsigned num, int Bits_num); // prints the binary number to Bits_num decimal places
+	int count_ones();  // counts the number of ones in the binary number
+	void print_number(int Bits_num); // prints the binary number to Bits_num decimal places
 	int binary_to_decimal( unsigned bin ); // converts binary to decimal
 	unsigned decimal_to_binary(int dec); // converts binary to decimal
 	void push_decimal(int dec); // push decimal number to the vector
