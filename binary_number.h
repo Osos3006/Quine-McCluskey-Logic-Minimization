@@ -12,7 +12,7 @@ public:
 	unsigned num;   //the binary number 
 	unsigned dashes;  // represents the locations of the dashes by ones
 	bool is_used;    //flag that indicates whether it is used in combinations
-	vector<int> covered_mins; //every number has a vector that includes all the minterms it covers 
+	vector<unsigned> covered_mins; //every number has a vector that includes all the minterms it covers 
 	binary_number(int dec);
 	binary_number();
 	~binary_number();

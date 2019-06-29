@@ -3,9 +3,7 @@
 #include "binary_number.h"
 #include<string>
 #include<vector>
-
 using namespace std;
-
 void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>&, int size);
 void print_MinTable(vector<vector<binary_number>>& A, int Binsize);
 void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table);
@@ -22,7 +20,7 @@ bool is_printed(binary_number n, vector<binary_number>& printed_numbers);
 //vector<vector<binary_number>> mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
 //vector<binary_number> printed_numbers; // vector that has printed numbers
 //vector<vector<binary_number>> final_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the final table for prime implicants
-
+//vector<binary_number> cov_minDC;  // vector of type binary that has all the final binary numbers with there covered minterms
 int num_of_var; //number of variables
 int main()
 {
@@ -36,7 +34,6 @@ int main()
 	int dont_c;  //don't care
 	vector<unsigned> minterms, dontcares, inputs;   //vector of minterms and dont cares
 	int num_of_mins = 0, num_of_dc = 0;
-
 	ifstream minterms_file("minterms.txt");
 
 	if (minterms_file.is_open())
@@ -170,6 +167,10 @@ int main()
 			{
 				cout << "\t\t";
 				final_table[i][j].print_with_dashes(num_of_var);
+				cout << "\t\t" << "covered minterms and Don't cares are: ";
+				for (int c = 0; c < final_table[i][j].covered_mins.size(); c++)
+					cout << final_table[i][j].covered_mins[c] << ' ';
+
 				cout << endl;
 				printed_numbers.push_back(final_table[i][j]);
 			}
@@ -238,11 +239,16 @@ is -011 which is represented as C.number=A&B=0011,C.dashes=A^B=1000*/
 void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table)
 {
 	short temp;
-	binary_number temp_num;
-	for (int i = 0; i < Initial_table.size() - 1; i++)
-		for (int j = 0; j < Initial_table[i].size(); j++)
+	//binary_number temp_num;
+	for (int i = 0; i < Initial_table.size() - 1; i++) {
+		
+		for (int j = 0; j < Initial_table[i].size(); j++) {
+			binary_number temp_num;
+			
+			
 			for (int k = 0; k < Initial_table[i + 1].size(); k++)
 			{
+				
 				if (Initial_table[i][j].dashes == Initial_table[i + 1][k].dashes) {
 					temp_num.num = Initial_table[i][j].num & Initial_table[i + 1][k].num;
 					temp_num.dashes = Initial_table[i][j].num ^ Initial_table[i + 1][k].num;
@@ -253,6 +259,9 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 						Initial_table[i][j].is_used = true;
 						Initial_table[i + 1][k].is_used = true;
 
+						Initial_table[i][j].covered_mins.push_back(Initial_table[i][j].num);//**
+						Initial_table[i + 1][k].covered_mins.push_back(Initial_table[i + 1][k].num);//**
+
 						/*temp_num.covered_mins.push_back(Initial_table[i][j].num);
 						temp_num.covered_mins.push_back(Initial_table[i+1][k].num);*/
 
@@ -262,10 +271,31 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 							mid_table.resize(temp + 1);
 
 						temp_num.is_used = false;
+
+						for (int c = 0; c < Initial_table[i][j].covered_mins.size(); c++)
+						{
+							//temp_num.covered_mins.resize(temp_num.covered_mins.size() + 1);
+							std::vector<unsigned>::iterator it = std::find(temp_num.covered_mins.begin(), temp_num.covered_mins.end(), Initial_table[i][j].covered_mins[c]);
+							if (it == temp_num.covered_mins.end())
+								temp_num.covered_mins.push_back(Initial_table[i][j].covered_mins[c]);
+						}
+						for (int c = 0; c < Initial_table[i+1][k].covered_mins.size(); c++)
+						{
+							std::vector<unsigned>::iterator it2 = std::find(temp_num.covered_mins.begin(), temp_num.covered_mins.end(), Initial_table[i + 1][k].covered_mins[c]);
+							if (it2 == temp_num.covered_mins.end())
+								temp_num.covered_mins.push_back(Initial_table[i + 1][k].covered_mins[c]);
+							/*cout << Initial_table[i][j].covered_mins[c];
+							cout << Initial_table[i + 1][k].covered_mins[c];*/
+						}
+						
+						Initial_table[i][j].covered_mins.clear();
+						Initial_table[i + 1][k].covered_mins.clear();
 						mid_table[temp].push_back(temp_num);
 					}
 				}
 			}
+		}
+	}
 
 }
 
