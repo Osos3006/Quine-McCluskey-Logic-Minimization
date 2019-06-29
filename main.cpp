@@ -28,7 +28,7 @@ int main()
 	vector<vector<binary_number>> mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
 	vector<binary_number> printed_numbers; // vector that has printed numbers
 	vector<vector<binary_number>> final_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the final table for prime implicants
-
+	
 
 	int mint;  //minterm 
 	int dont_c;  //don't care
@@ -153,6 +153,7 @@ int main()
 		Initial_table.clear();
 		Initial_table = mid_table;
 		mid_table.clear();
+		//mid_table.resize(0);
 
 	}
 
@@ -168,13 +169,16 @@ int main()
 				cout << "\t\t";
 				final_table[i][j].print_with_dashes(num_of_var);
 				cout << "\t\t" << "covered minterms and Don't cares are: ";
-				for (int c = 0; c < final_table[i][j].covered_mins.size(); c++)
-					cout << final_table[i][j].covered_mins[c] << ' ';
+				for (int c = 0; c < final_table[i][j].covered_mins.size(); c++)					
+						cout << final_table[i][j].covered_mins[c] << ' ';
+						
 
 				cout << endl;
 				printed_numbers.push_back(final_table[i][j]);
 			}
 		}
+
+	
 
 		cout << "\n-------------------------------------" << endl;
 	}
@@ -243,11 +247,12 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 	for (int i = 0; i < Initial_table.size() - 1; i++) {
 		
 		for (int j = 0; j < Initial_table[i].size(); j++) {
-			binary_number temp_num;
+			
 			
 			
 			for (int k = 0; k < Initial_table[i + 1].size(); k++)
 			{
+				binary_number temp_num;
 				
 				if (Initial_table[i][j].dashes == Initial_table[i + 1][k].dashes) {
 					temp_num.num = Initial_table[i][j].num & Initial_table[i + 1][k].num;
@@ -288,8 +293,8 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 							cout << Initial_table[i + 1][k].covered_mins[c];*/
 						}
 						
-						Initial_table[i][j].covered_mins.clear();
-						Initial_table[i + 1][k].covered_mins.clear();
+						//Initial_table[i][j].covered_mins.clear();
+						//Initial_table[i + 1][k].covered_mins.clear();
 						mid_table[temp].push_back(temp_num);
 					}
 				}

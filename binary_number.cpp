@@ -15,6 +15,7 @@ binary_number::binary_number(int dec)
 	dashes = 0;
 	is_used = false;
 	covered_mins.resize(0);
+	covered_mins.push_back(dec);
 }
 
 int binary_number::count_ones(int n)
