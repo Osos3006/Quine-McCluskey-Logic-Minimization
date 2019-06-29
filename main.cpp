@@ -3,9 +3,7 @@
 #include "binary_number.h"
 #include<string>
 #include<vector>
-
 using namespace std;
-
 void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>&, int size);
 void print_MinTable(vector<vector<binary_number>>& A, int Binsize);
 void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table);
@@ -15,8 +13,12 @@ void create_final_table(vector<vector<binary_number>>& mid_table, vector<vector<
 void print_final_table(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table, vector<vector<binary_number>>& final_table, vector<binary_number>& printed_numbers);
 void print_finalMinterms(vector<vector<binary_number>>& mid_table);
 bool is_printed(binary_number n, vector<binary_number>& printed_numbers);
-bool is_minterm(unsigned n, vector<unsigned>& s);
-bool is_dontcare(unsigned n, vector<unsigned>& s);
+bool is_essential(binary_number x, int group, int pos, vector<vector<binary_number>>& primes, vector<unsigned>& minterms);
+bool minterm_exists(binary_number t, int x, int group, int pos, vector<vector<binary_number>>& primes, vector<unsigned>& minterms);
+bool is_minterm(int x, vector<unsigned>& minterms);
+bool in_essentials(binary_number x, vector<binary_number>essentials);
+bool covered_by_essential(int x, vector<binary_number> essentials);
+
 
 //void init(); //start the table making and printing
 //void getinput(); //get input from user
@@ -25,7 +27,7 @@ bool is_dontcare(unsigned n, vector<unsigned>& s);
 //vector<vector<binary_number>> mid_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the mid process table
 //vector<binary_number> printed_numbers; // vector that has printed numbers
 //vector<vector<binary_number>> final_table;  // vector of vectors - each vector inside represents a group according to the number of ones and this is the final table for prime implicants
-
+//vector<binary_number> cov_minDC;  // vector of type binary that has all the final binary numbers with there covered minterms
 int num_of_var; //number of variables
 int main()
 {
@@ -39,7 +41,6 @@ int main()
 	int dont_c;  //don't care
 	vector<unsigned> minterms, dontcares, inputs;   //vector of minterms and dont cares
 	int num_of_mins = 0, num_of_dc = 0;
-
 	ifstream minterms_file("minterms.txt");
 
 	if (minterms_file.is_open())
@@ -68,7 +69,7 @@ int main()
 
 				mint = atoi(a.c_str());
 				minterms.push_back(mint);
-				//		num_of_mins++;
+				// num_of_mins++;
 
 			}
 
@@ -88,7 +89,7 @@ int main()
 					dont_c = atoi(b.c_str());
 					dontcares.push_back(dont_c);
 				}
-				//	num_of_dc++;
+				// num_of_dc++;
 				minterms_file.get(c);
 			}
 
@@ -124,7 +125,7 @@ int main()
 	while (!final)
 	{
 		create_combined(Initial_table, mid_table);
-		//	print_combined(Initial_table, printed_numbers);
+		// print_combined(Initial_table, printed_numbers);
 		if (mid_table.empty())
 		{
 			for (int i = 0; i < Initial_table.size(); i++)
@@ -136,7 +137,7 @@ int main()
 						final_table.resize(temp + 1);
 					final_table[temp].push_back(temp_num);
 
-					//	final_table[i].push_back(Initial_table[i][j]);
+					// final_table[i].push_back(Initial_table[i][j]);
 
 				}
 			final = true;
@@ -159,49 +160,74 @@ int main()
 		Initial_table.clear();
 		Initial_table = mid_table;
 		mid_table.clear();
+		//mid_table.resize(0);
 
 	}
 
 
 
-	cout << "The Prime Implicants :";
+
 	for (int i = 0; i < final_table.size(); i++)
 	{
-		//cout << i;
+		cout << i;
 		for (int j = 0; j < final_table[i].size(); j++) {
 			if (!is_printed(final_table[i][j], printed_numbers))
 			{
-				//cout << "\t\t";
+				cout << "\t\t";
 				final_table[i][j].print_with_dashes(num_of_var);
-				cout << "        " << "and it covers minterms : ";
-				for (int f = 0; f < final_table[i][j].covered_mins.size(); f++)
-					if (is_minterm(final_table[i][j].num, minterms))
-						cout << final_table[i][j].num << ", ";
-				cout << "and it covers don't cares : ";
-				for (int f = 0; f < final_table[i][j].covered_mins.size(); f++)
-					if (is_dontcare(final_table[i][j].num, dontcares))
-						cout << final_table[i][j].num << ", ";
+				cout << "\t\t" << "covered minterms and Don't cares are: ";
+				for (int c = 0; c < final_table[i][j].covered_mins.size(); c++)
+					cout << final_table[i][j].covered_mins[c] << ' ';
+
+
 				cout << endl;
 				printed_numbers.push_back(final_table[i][j]);
 			}
 		}
 
+
+
 		cout << "\n-------------------------------------" << endl;
 	}
 
+	vector<binary_number> essentials;
 
+	int k = 0;
+	bool flag = true;
 
+	for (int i = 0; i < final_table.size(); i++)
+		for (int j = 0; j < final_table[i].size(); j++)
+		{
+			flag = true;
+			for (int k = 0; k < final_table[i][j].covered_mins.size() && flag; k++)
+				if (is_minterm(final_table[i][j].covered_mins[k], minterms))
+				{
+					if (!minterm_exists(final_table[i][j], final_table[i][j].covered_mins[k], i, j, final_table, minterms))
+					{
+						if (!in_essentials(final_table[i][j], essentials))
+							essentials.push_back(final_table[i][j]);
+						flag = false;
+					}
+				}
 
+			//if (is_essential(final_table[i][j],i, j,final_table, minterms))
+			//	essentials.push_back(final_table[i][j]);
+		}
 
+	cout << "Essential Prime Implicants :" << endl;
 
-	/*bool flag = false;
-	while (!flag)
+	for (int i = 0; i < essentials.size(); i++)
 	{
-	create_combined();
-	print_combined();
-	}*/
+		essentials[i].print_with_dashes(num_of_var);
+		cout << endl;
+	}
 
+	cout << "Minterms that are not covered by essential prime implicants: " << endl;
 
+	for (int i = 0; i < minterms.size(); i++)
+		if (!(covered_by_essential(minterms[i], essentials)))
+			cout << minterms[i] << "   ";
+	cout << endl;
 
 
 	system("pause");
@@ -209,29 +235,66 @@ int main()
 	return 0;
 }
 
-
-bool is_minterm(unsigned n, vector<unsigned>& s)
+bool covered_by_essential(int x, vector<binary_number> essentials)
 {
-	bool exists = false;
-	for (int i = 0; i < s.size(); i++)
-		if (s[i] == n)
-			exists = true;
-	return exists;
+
+	for (int i = 0; i < essentials.size(); i++)
+	{
+		for (int j = 0; j < essentials[i].covered_mins.size(); j++)
+			if (essentials[i].covered_mins[j] == x)
+				return true;
+	}
+	return false;
 }
 
-bool is_dontcare(unsigned n, vector<unsigned>& s)
+bool in_essentials(binary_number x, vector<binary_number>essentials)
 {
-	bool exists = false;
-	for (int i = 0; i < s.size(); i++)
-		if (s[i] == n)
-			exists = true;
-	return exists;
+	for (int i = 0; i < essentials.size(); i++)
+	{
+		if (x.num == essentials[i].num && x.dashes == essentials[i].dashes)
+			return true;
+	}
+	return false;
+}
+
+
+bool minterm_exists(binary_number t, int x, int group, int pos, vector<vector<binary_number>>& primes, vector<unsigned>& minterms)
+{
+	for (int i = 0; i<primes.size(); i++)
+		for (int j = 0; j < primes[i].size(); j++)
+		{
+			binary_number r = primes[i][j];
+			if ((t.num != primes[i][j].num) && (t.dashes != primes[i][j].dashes))
+			{
+				for (int k = 0; k < primes[i][j].covered_mins.size(); k++)
+					if (is_minterm(primes[i][j].covered_mins[k], minterms))
+						if (x == primes[i][j].covered_mins[k])
+							return true;
+			}
+
+
+		}
+
+	return false;
+}
+
+bool is_minterm(int x, vector<unsigned>& minterms)
+{
+	//bool flag = false;
+
+	for (int i = 0; i < minterms.size(); i++)
+	{
+		if (x == minterms[i])
+			return true;
+	}
+
+	return false;
 }
 
 
 void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>& inputs, int size)
 {
-	int covered_size = 0;
+
 	binary_number temp;
 	int number_of_ones;
 
@@ -244,10 +307,6 @@ void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>& inputs,
 			A.resize(number_of_ones + 1);
 		A[number_of_ones].push_back(temp);
 
-
-
-		int esize = A[number_of_ones].size() - 1;
-		A[number_of_ones][esize].covered_mins.push_back(inputs[i]);
 	}
 
 
@@ -273,11 +332,17 @@ is -011 which is represented as C.number=A&B=0011,C.dashes=A^B=1000*/
 void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector<binary_number>>& mid_table)
 {
 	short temp;
-	binary_number temp_num;
-	for (int i = 0; i < Initial_table.size() - 1; i++)
-		for (int j = 0; j < Initial_table[i].size(); j++)
+	//binary_number temp_num;
+	for (int i = 0; i < Initial_table.size() - 1; i++) {
+
+		for (int j = 0; j < Initial_table[i].size(); j++) {
+
+
+
 			for (int k = 0; k < Initial_table[i + 1].size(); k++)
 			{
+				binary_number temp_num;
+
 				if (Initial_table[i][j].dashes == Initial_table[i + 1][k].dashes) {
 					temp_num.num = Initial_table[i][j].num & Initial_table[i + 1][k].num;
 					temp_num.dashes = Initial_table[i][j].num ^ Initial_table[i + 1][k].num;
@@ -288,24 +353,43 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 						Initial_table[i][j].is_used = true;
 						Initial_table[i + 1][k].is_used = true;
 
+						Initial_table[i][j].covered_mins.push_back(Initial_table[i][j].num);//**
+						Initial_table[i + 1][k].covered_mins.push_back(Initial_table[i + 1][k].num);//**
+
+																									/*temp_num.covered_mins.push_back(Initial_table[i][j].num);
+																									temp_num.covered_mins.push_back(Initial_table[i+1][k].num);*/
+
 
 						temp = temp_num.count_ones(temp_num.num);
 						if (temp + 1 > mid_table.size())
 							mid_table.resize(temp + 1);
 
 						temp_num.is_used = false;
+
+						for (int c = 0; c < Initial_table[i][j].covered_mins.size(); c++)
+						{
+							//temp_num.covered_mins.resize(temp_num.covered_mins.size() + 1);
+							std::vector<int>::iterator it = std::find(temp_num.covered_mins.begin(), temp_num.covered_mins.end(), Initial_table[i][j].covered_mins[c]);
+							if (it == temp_num.covered_mins.end())
+								temp_num.covered_mins.push_back(Initial_table[i][j].covered_mins[c]);
+						}
+						for (int c = 0; c < Initial_table[i + 1][k].covered_mins.size(); c++)
+						{
+							std::vector<int>::iterator it2 = std::find(temp_num.covered_mins.begin(), temp_num.covered_mins.end(), Initial_table[i + 1][k].covered_mins[c]);
+							if (it2 == temp_num.covered_mins.end())
+								temp_num.covered_mins.push_back(Initial_table[i + 1][k].covered_mins[c]);
+							/*cout << Initial_table[i][j].covered_mins[c];
+							cout << Initial_table[i + 1][k].covered_mins[c];*/
+						}
+
+						//Initial_table[i][j].covered_mins.clear();
+						//Initial_table[i + 1][k].covered_mins.clear();
 						mid_table[temp].push_back(temp_num);
-						int esize = mid_table[temp].size() - 1;
-
-						for (int e = 0; e < Initial_table[i][j].covered_mins.size(); e++)
-							mid_table[temp][esize].covered_mins.push_back(Initial_table[i][j].covered_mins[e]);
-						for (int e = 0; e < Initial_table[i + 1][k].covered_mins.size(); e++)
-							mid_table[temp][esize].covered_mins.push_back(Initial_table[i + 1][k].covered_mins[e]);
-
-
 					}
 				}
 			}
+		}
+	}
 
 }
 
