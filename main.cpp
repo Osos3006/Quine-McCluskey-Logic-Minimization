@@ -2,6 +2,7 @@
 #include <fstream>
 #include "binary_number.h"
 #include<string>
+#include<cmath>
 #include<vector>
 using namespace std;
 void create_MinTable(vector<vector<binary_number>>& A, vector<unsigned>&, int size);
@@ -18,7 +19,7 @@ bool minterm_exists(binary_number t, int x, int group, int pos, vector<vector<bi
 bool is_minterm(int x, vector<unsigned>& minterms);
 bool in_essentials(binary_number x, vector<binary_number>essentials);
 bool covered_by_essential(int x, vector<binary_number> essentials);
-
+bool out_of_Range(int x);
 
 //void init(); //start the table making and printing
 //void getinput(); //get input from user
@@ -40,64 +41,155 @@ int main()
 	int mint;  //minterm 
 	int dont_c;  //don't care
 	vector<unsigned> minterms, dontcares, inputs;   //vector of minterms and dont cares
-	int num_of_mins = 0, num_of_dc = 0;
+	//int num_of_mins = 0, num_of_dc = 0;
+	
 	ifstream minterms_file("minterms.txt");
-
+	int lines=1; //variable to count lines in file
 	if (minterms_file.is_open())
-
 	{
 
+
 		minterms_file >> num_of_var;
+
 		char c;
+
 		minterms_file.get(c);
+
 		minterms_file.get(c);
+
+		bool flag = false;
+
+
 
 		while (!minterms_file.eof())  //end of line
 
+
+
 		{
-			if (!(c == ',' || c == ' ' || c == '\n'))
+
+			if (!(c == ',' || c == ' ' || c == '\n') && !flag)
 
 			{
+
+
 
 				string a = "";
+
 				while (!(c == ',' || c == ' ' || c == '\n'))
 
+
+
 				{
+
 					a = a + c;
+
 					minterms_file.get(c);
+					if (c == '\n')
+						lines++;
+				
+
 				}
+
+
 
 				mint = atoi(a.c_str());
+				if (out_of_Range(mint))
+				{
+					cout << " ERROR!! a minterm is out of the range of combinations (2^n) , please recheck your file and run again" << endl;
+					system("pause");
+					return 0;
+				}
+
 				minterms.push_back(mint);
+
 				// num_of_mins++;
 
-			}
 
+
+			}
 			if (c == '\n')
 			{
-				minterms_file.get(c);
-
-				string b = "";
-				while (!(c == ',' || c == ' ' || c == '\n'))
-
-				{
-					b = b + c;
-					minterms_file.get(c);
-				}
-				if (b != "")
-				{
-					dont_c = atoi(b.c_str());
-					dontcares.push_back(dont_c);
-				}
-				// num_of_dc++;
-				minterms_file.get(c);
+				flag = true;
+				lines++;
 			}
 
+
+
+			if (flag)
+
+			{
+
+				//minterms_file.get(c);
+
+
+
+				string b = "";
+
+				while (!(c == ',' || c == ' ' || c == '\n') && !minterms_file.eof())
+
+
+
+				{
+
+					b = b + c;
+
+					minterms_file.get(c);
+					if (c == '\n')
+						lines++;
+
+
+				}
+
+				if (b != "")
+
+				{
+
+					dont_c = atoi(b.c_str());
+					if (out_of_Range(dont_c))
+					{
+						cout << " ERROR!! a Don't care is out of the range of combinations (2^n) , please recheck your file and run again" << endl;
+						system("pause");
+						return 0;
+					}
+					if (is_minterm(dont_c, minterms))
+					{
+						cout << " ERROR!! a number cannot be used for both don't cares and minterms, please recheck your file and run again" << endl;
+						system("pause");
+						return 0;
+					}
+					dontcares.push_back(dont_c);
+
+				}
+
+				// num_of_dc++;
+
+	 //       minterms_file.get(c);
+
+			}
+
+
+			if (lines > 3)
+			{
+				cout << " ERROR!! wrong file format " << endl;
+				system("pause");
+				return 0;
+			}
+
+
 			minterms_file.get(c);
+			if (c == '\n')
+				lines++;
+
+
+
 
 		}
 
+
+
 	}
+
+
 
 	minterms_file.close();
 
@@ -358,10 +450,9 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 						Initial_table[i + 1][k].is_used = true;
 
 						Initial_table[i][j].covered_mins.push_back(Initial_table[i][j].num);//**
-						Initial_table[i + 1][k].covered_mins.push_back(Initial_table[i + 1][k].num);//**
-
-																									/*temp_num.covered_mins.push_back(Initial_table[i][j].num);
-																									temp_num.covered_mins.push_back(Initial_table[i+1][k].num);*/
+						Initial_table[i + 1][k].covered_mins.push_back(Initial_table[i + 1][k].num);//**													
+						/*temp_num.covered_mins.push_back(Initial_table[i][j].num);
+						temp_num.covered_mins.push_back(Initial_table[i+1][k].num);*/
 
 
 						temp = temp_num.count_ones(temp_num.num);
@@ -427,6 +518,15 @@ bool is_printed(binary_number n, vector<binary_number>& printed_numbers)
 			printed_numbers[i].dashes)
 			return true;
 	return false;
+}
+
+bool out_of_Range(int x)
+{
+	int combination_nvar = pow(2, num_of_var); // number of minterms and don't cars for n variables
+	if (x >= combination_nvar)
+		return true;
+	else
+		return false;
 }
 
 /*creates final table. works like p_group(). example; in p_group you have:
@@ -531,3 +631,11 @@ cout << "\n-------------------------------------" << endl;
 
 
 */
+
+
+
+
+
+
+
+
