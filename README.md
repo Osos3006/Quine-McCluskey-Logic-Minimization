@@ -1,6 +1,7 @@
 # Quine-McCluskey-Logic-Minimization
 
- All copy rights © go to Mohammed Osama Abuelwafa and Marwah hisham 
+ All copy rights © go to Mohammed Osama Abuelwafa and Marwah hisham.
+ 
  This C++ code automates Quine-McCluskey-Logic-Minimization algorithm and finds the following:
  1) Read in (and validate) a Boolean function using its minterms and don’t care terms (as
 decimal numbers).

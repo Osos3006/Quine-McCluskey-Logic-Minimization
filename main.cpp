@@ -15,6 +15,7 @@ void print_final_table(vector<vector<binary_number>>& Initial_table, vector<vect
 void print_finalMinterms(vector<vector<binary_number>>& mid_table);
 bool is_printed(binary_number n, vector<binary_number>& printed_numbers);
 bool is_essential(binary_number x, int group, int pos, vector<vector<binary_number>>& primes, vector<unsigned>& minterms);
+bool is_dc(int x, vector<unsigned>& dontcares); 
 bool minterm_exists(binary_number t, int x, int group, int pos, vector<vector<binary_number>>& primes, vector<unsigned>& minterms);
 bool is_minterm(int x, vector<unsigned>& minterms);
 bool in_essentials(binary_number x, vector<binary_number>essentials);
@@ -100,6 +101,12 @@ int main()
 					return 0;
 				}
 
+				if (is_minterm(mint, minterms))
+				{
+					cout << " ERROR!! a minterm is duplicated. we believe that this a mistake , please recheck your file and run again" << endl;
+					system("pause");
+					return 0;
+				}
 				minterms.push_back(mint);
 
 				// num_of_mins++;
@@ -154,6 +161,12 @@ int main()
 					if (is_minterm(dont_c, minterms))
 					{
 						cout << " ERROR!! a number cannot be used for both don't cares and minterms, please recheck your file and run again" << endl;
+						system("pause");
+						return 0;
+					}
+					if (is_dc(dont_c, dontcares))
+					{
+						cout << " ERROR!! a Don't care term is duplicated. we believe that this a mistake , please recheck your file and run again" << endl;
 						system("pause");
 						return 0;
 					}
@@ -486,6 +499,17 @@ void create_combined(vector<vector<binary_number>>& Initial_table, vector<vector
 		}
 	}
 
+}
+
+bool is_dc(int x, vector<unsigned>& dontcares)
+{
+	for (int i = 0; i < dontcares.size(); i++)
+	{
+		if (x == dontcares[i])
+			return true;
+	}
+
+	return false;
 }
 
 
