@@ -378,49 +378,32 @@ void create_final_table(vector<vector<binary_number>>& Initial_table, vector<vec
 	bool final = false;
 	binary_number temp_num;
 
+
 	while (!final)
 	{
 		create_combined(Initial_table, mid_table);
-		// print_combined(Initial_table, printed_numbers);
-		if (mid_table.empty())
-		{
-			for (int i = 0; i < Initial_table.size(); i++)
-				for (int j = 0; j < Initial_table[i].size(); j++)
+
+		for (int i = 0; i < Initial_table.size(); i++)
+			for (int j = 0; j < Initial_table[i].size(); j++)
+			{
+				if (!Initial_table[i][j].is_used)
 				{
 					temp_num = Initial_table[i][j];
 					int temp = temp_num.count_ones(temp_num.num);
 					if (temp + 1 > final_table.size())
 						final_table.resize(temp + 1);
 					final_table[temp].push_back(temp_num);
-
-					// final_table[i].push_back(Initial_table[i][j]);
-
 				}
+			}
+
+		if (mid_table.empty())
 			final = true;
-		}
-		else
-			for (int i = 0; i < Initial_table.size(); i++)
-				for (int j = 0; j < Initial_table[i].size(); j++)
-				{
-					if (!Initial_table[i][j].is_used)
-					{
-						temp_num = Initial_table[i][j];
-						int temp = temp_num.count_ones(temp_num.num);
-						if (temp + 1 > final_table.size())
-							final_table.resize(temp + 1);
-						final_table[temp].push_back(temp_num);
-						//final_table[i].push_back(Initial_table[i][j]);
-					}
-				}
 
 		Initial_table.clear();
 		Initial_table = mid_table;
 		mid_table.clear();
-		//mid_table.resize(0);
 
 	}
-
-
 
 }
 
