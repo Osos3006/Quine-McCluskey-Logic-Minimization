@@ -32,7 +32,8 @@ int main()
 
 	ifstream minterms_file("minterms.txt");
 
-	read_from_file(minterms_file, minterms, dontcares);
+	if (!read_from_file(minterms_file, minterms, dontcares))
+		return 0;
 
 	minterms_file.close();
 
